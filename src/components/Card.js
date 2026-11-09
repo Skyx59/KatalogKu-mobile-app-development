@@ -1,5 +1,12 @@
 
-import { Pressable, View, Text, Image, StyleSheet } from 'react-native';
+import {
+  Pressable,
+  View,
+  Text,
+  Image,
+  StyleSheet,
+} from 'react-native';
+
 import { COLORS } from '../theme/colors';
 import Rating from './Rating';
 
@@ -17,13 +24,22 @@ export default function Card({
       ? price.toLocaleString('id-ID')
       : price;
 
+  const hasRating = rating != null;
+
   return (
-    <Pressable style={styles.card} onPress={onPress}>
+    <Pressable
+      style={[
+        styles.card,
+        !hasRating && styles.cardDefault,
+      ]}
+      onPress={onPress}
+      accessibilityRole="button"
+    >
       <View style={styles.imageContainer}>
         <Image
           source={{ uri: image }}
           style={styles.image}
-          resizeMode="contain"
+          resizeMode="cover"
         />
 
         {discount != null ? (
@@ -37,21 +53,27 @@ export default function Card({
 
       <View style={styles.body}>
         {category ? (
-          <Text style={styles.category}>
+          <Text
+            style={styles.category}
+            numberOfLines={1}
+          >
             {category.toUpperCase()}
           </Text>
         ) : null}
 
-        <Text style={styles.title} numberOfLines={2}>
-        {title}
+        <Text
+          style={styles.title}
+          numberOfLines={2}
+        >
+          {title}
         </Text>
 
-        {rating != null ? (
-        <Rating value={rating} />
+        {hasRating ? (
+          <Rating value={rating} />
         ) : null}
 
         <Text style={styles.price}>
-        Rp {formattedPrice}
+          Rp {formattedPrice}
         </Text>
       </View>
     </Pressable>
@@ -61,27 +83,64 @@ export default function Card({
 const styles = StyleSheet.create({
   card: {
     flex: 1,
+    minHeight: 193,
     margin: 6,
     backgroundColor: COLORS.card,
-    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 8,
     overflow: 'hidden',
-    elevation: 2,
-    shadowColor: COLORS.text,
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
   },
+
+  cardDefault: {
+    height: 158/193,
+  },
+
   imageContainer: {
     position: 'relative',
+    width: '100%',
+    aspectRatio: 158 / 108,
+    backgroundColor: COLORS.card,
+    overflow: 'hidden',
+    flexShrink: 0,
   },
+
   image: {
     width: '100%',
-    aspectRatio: 1,
-    backgroundColor: COLORS.card,
+    height: '100%',
   },
+
+  body: {
+    marginTop: 4,
+    paddingTop: 0,
+    paddingRight: 4,
+    paddingBottom: 0,
+    paddingLeft: 8,
+  },
+
+  category: {
+    fontSize: 13,
+    lineHeight: 16,
+    fontWeight: '400',
+    color: COLORS.muted,
+    marginBottom: 4,
+  },
+
+  title: {
+    fontSize: 13,
+    lineHeight: 16,
+    fontWeight: '400',
+    color: COLORS.text,
+  },
+
+  price: {
+    marginTop: 4,
+    fontSize: 13,
+    lineHeight: 16,
+    fontWeight: '400',
+    color: COLORS.primary,
+  },
+
   discountBadge: {
     position: 'absolute',
     top: 8,
@@ -91,27 +150,11 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 6,
   },
+
   discountText: {
     color: COLORS.background,
     fontSize: 12,
     fontWeight: 'bold',
-  },
-  body: {
-    padding: 10,
-  },
-  category: {
-    fontSize: 10,
-    color: COLORS.muted,
-    marginBottom: 4,
-  },
-  title: {
-    fontSize: 14,
-    color: COLORS.text,
-    minHeight: 36,
-  },
-  price: {
-    marginTop: 4,
-    fontWeight: 'bold',
-    color: COLORS.accent,
+    textAlign: 'center',
   },
 });
