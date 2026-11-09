@@ -18,7 +18,7 @@ import Card from '../components/Card';
 import { DUMMY_PRODUCTS } from '../data/dummy';
 import { COLORS } from '../theme/colors';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const { width } = useWindowDimensions();
 
   const numColumns =
@@ -128,51 +128,33 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.sortRow}>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityState={{
-                  selected: urutan === 'termurah',
-                }}
-                onPress={() => pilihUrutan('termurah')}
-                style={[
-                  styles.sortChip,
-                  urutan === 'termurah' &&
-                    styles.sortChipSelected,
-                ]}
-              >
-                <Text
+              {['termurah', 'termahal'].map((nilai) => (
+                <Pressable
+                  key={nilai}
+                  accessibilityRole="button"
+                  accessibilityState={{
+                    selected: urutan === nilai,
+                  }}
+                  onPress={() => pilihUrutan(nilai)}
                   style={[
-                    styles.sortText,
-                    urutan === 'termurah' &&
-                      styles.sortTextSelected,
+                    styles.sortChip,
+                    urutan === nilai &&
+                      styles.sortChipSelected,
                   ]}
                 >
-                  Termurah
-                </Text>
-              </Pressable>
-
-              <Pressable
-                accessibilityRole="button"
-                accessibilityState={{
-                  selected: urutan === 'termahal',
-                }}
-                onPress={() => pilihUrutan('termahal')}
-                style={[
-                  styles.sortChip,
-                  urutan === 'termahal' &&
-                    styles.sortChipSelected,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.sortText,
-                    urutan === 'termahal' &&
-                      styles.sortTextSelected,
-                  ]}
-                >
-                  Termahal
-                </Text>
-              </Pressable>
+                  <Text
+                    style={[
+                      styles.sortText,
+                      urutan === nilai &&
+                        styles.sortTextSelected,
+                    ]}
+                  >
+                    {nilai === 'termurah'
+                      ? 'Termurah'
+                      : 'Termahal'}
+                  </Text>
+                </Pressable>
+              ))}
             </View>
           </>
         }
@@ -192,6 +174,11 @@ export default function HomeScreen() {
               price={item.price}
               image={item.thumbnail}
               category={item.category}
+              onPress={() =>
+                navigation.navigate('Detail', {
+                  product: item,
+                })
+              }
             />
           </View>
         )}

@@ -4,7 +4,6 @@ import {
   ScrollView,
   Text,
   Image,
-  Alert,
   StyleSheet,
 } from 'react-native';
 
@@ -13,12 +12,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import HeaderBar from '../components/HeaderBar';
 import Button from '../components/Button';
-import { DUMMY_PRODUCTS } from '../data/dummy';
+import { useFavorit } from '../context/FavoritContext';
 import { COLORS } from '../theme/colors';
 
-export default function DetailScreen({ onBack }) {
+export default function DetailScreen({ route, navigation }) {
   const insets = useSafeAreaInsets();
-  const product = DUMMY_PRODUCTS[0];
+  const { product } = route.params;
+
+  const { isFavorit, toggleFavorit } = useFavorit();
+  const fav = isFavorit(product.id);
 
   const formattedPrice = Number(
     product.price
@@ -27,13 +29,6 @@ export default function DetailScreen({ onBack }) {
   const formattedRating = Number(
     product.rating
   ).toFixed(1);
-
-  const handleFavorite = () => {
-    Alert.alert(
-      'Favorit',
-      'Fitur favorit akan diaktifkan pada Modul 6.'
-    );
-  };
 
   return (
     <View style={styles.backdrop}>
@@ -55,10 +50,10 @@ export default function DetailScreen({ onBack }) {
           showsVerticalScrollIndicator={false}
         >
           <HeaderBar
-            title="Detail Produk"
+            title={product.title}
             compact
             embedded
-            onBack={onBack}
+            onBack={() => navigation.goBack()}
           />
 
           <View style={styles.imageContainer}>
@@ -83,7 +78,7 @@ export default function DetailScreen({ onBack }) {
             </Text>
 
             <Text style={styles.rating}>
-              ★  {formattedRating} / 5
+              ★ {formattedRating} / 5
             </Text>
           </View>
 
@@ -98,9 +93,14 @@ export default function DetailScreen({ onBack }) {
           </View>
 
           <Button
-            title="Tambah ke Favorit"
+            title={
+              fav
+                ? 'Hapus dari Favorit'
+                : 'Tambah ke Favorit'
+            }
+            variant={fav ? 'outline' : 'primary'}
             height={48}
-            onPress={handleFavorite}
+            onPress={() => toggleFavorit(product)}
           />
         </ScrollView>
       </View>
@@ -118,12 +118,12 @@ const styles = StyleSheet.create({
   },
 
   overlay: {
-  flex: 1,
-  minHeight: 0,
-  width: '100%',
-  maxWidth: 480,
-  alignSelf: 'center',
-  backgroundColor: COLORS.background,
+    flex: 1,
+    minHeight: 0,
+    width: '100%',
+    maxWidth: 480,
+    alignSelf: 'center',
+    backgroundColor: COLORS.background,
   },
 
   bottomBand: {
