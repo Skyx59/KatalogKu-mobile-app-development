@@ -1,22 +1,17 @@
 
-import { useState } from 'react';
+import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import HomeScreen from './src/screens/HomeScreen';
-import DetailScreen from './src/screens/DetailScreen';
+import AppNavigator from './src/navigation/AppNavigator';
+import { FavoritProvider } from './src/context/FavoritContext';
 
 export default function App() {
-  const [showDetail, setShowDetail] = useState(true);
-
   return (
     <SafeAreaProvider>
-      {showDetail ? (
-        <DetailScreen
-          onBack={() => setShowDetail(false)}
-        />
-      ) : (
-        <HomeScreen />
-      )}
+      <FavoritProvider>
+        <AppNavigator />
+        <StatusBar style="light" />
+      </FavoritProvider>
     </SafeAreaProvider>
   );
 }
